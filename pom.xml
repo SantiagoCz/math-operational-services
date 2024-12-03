@@ -23,6 +23,7 @@
         <module>config-server</module>
         <module>determinants-service</module>
         <module>eureka-server</module>
+        <module>matrices-service</module>
         <module>vectors-service</module>
     </modules>
 
