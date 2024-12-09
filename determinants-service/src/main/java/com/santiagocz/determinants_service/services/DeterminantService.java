@@ -24,13 +24,31 @@ public class DeterminantService {
 
     public double calculateDeterminant(MatrixDto matrix) {
         verifyIfSquareMatrix(matrix);
-        if(matrix.getRows() == 2) {
+        if (matrix.getRows() == 1) {
+            return matrix.getMatrix()[0][0];
+        } else if (matrix.getRows() == 2) {
             return calculateInOrderTwo(matrix);
-        } else if( matrix.getRows() == 3) {
+        } else if ( matrix.getRows() == 3) {
             return calculateInOrderThree(matrix);
         } else {
             return calculateInSuperiorOrder(matrix);
         }
+    }
+
+    public MatrixDto calculateAdjugateMatrix(MatrixDto matrix) {
+        int rows = matrix.getRows();
+        int columns = matrix.getColumns();
+        MatrixDto adjugateMatrix = new MatrixDto(new double[rows][columns]);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                int sign = ((i + j) % 2 == 0) ? 1 : -1;
+                MatrixDto reducedMatrix = reduceMatrix(matrix, i, j);
+                adjugateMatrix.getMatrix()[i][j] = sign * calculateDeterminant(reducedMatrix);
+            }
+        }
+
+        return adjugateMatrix;
     }
 
     private void verifyIfSquareMatrix(MatrixDto matrix) {
@@ -40,7 +58,7 @@ public class DeterminantService {
     }
 
     private double calculateInOrderTwo(MatrixDto matrix) {
-        return matrix.getMatrix()[1][1] * matrix.getMatrix()[2][2] - matrix.getMatrix()[2][1] * matrix.getMatrix()[1][2];
+        return matrix.getMatrix()[0][0] * matrix.getMatrix()[1][1] - matrix.getMatrix()[1][0] * matrix.getMatrix()[0][1];
     }
 
     private double calculateInOrderThree(MatrixDto matrix) {
@@ -61,12 +79,11 @@ public class DeterminantService {
 
         double determinant = 0;
 
-        for(int i = 0; i < firstRow.length; i++){
+        for (int i = 0; i < firstRow.length; i++){
             int sign = (i % 2 == 0) ? 1 : -1;
             MatrixDto reducedMatrix = reduceMatrix(matrix, i);
             determinant += sign * firstRow[i] * calculateDeterminant(reducedMatrix);
         }
-
         return determinant;
     }
 
@@ -87,5 +104,21 @@ public class DeterminantService {
         }
         return newMatrix;
     }
-}
 
+    private MatrixDto reduceMatrix(MatrixDto matrix, int rowIndex, int columnIndex) {
+        int rows = matrix.getRows();
+        int columns = matrix.getColumns();
+        MatrixDto reducedMatrix = new MatrixDto(new double[rows - 1][columns - 1]);
+
+        for (int i = 0, newRow = 0; i < rows; i++) {
+            if (i == rowIndex) continue;
+            for (int j = 0, newColumn = 0; j < columns; j++) {
+                if (j == columnIndex) continue;
+                reducedMatrix.getMatrix()[newRow][newColumn++] = matrix.getMatrix()[i][j];
+            }
+            newRow++;
+        }
+        return reducedMatrix;
+    }
+
+}
