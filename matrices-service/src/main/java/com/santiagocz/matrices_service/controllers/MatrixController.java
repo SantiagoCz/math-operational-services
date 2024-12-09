@@ -53,4 +53,22 @@ public class MatrixController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/determinant")
+    public ResponseEntity<Double> calculateDeterminant(@RequestBody Matrix matrix) {
+        double result = matrixService.getDeterminant(matrix);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/adjoint")
+    public ResponseEntity<Matrix> calculateAdjugateMatrix(@RequestBody Matrix matrix) {
+        Matrix result = matrixService.getAdjugateMatrix(matrix);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/inverse")
+    public ResponseEntity<Matrix> calculateInverse(@RequestBody Matrix matrix) {
+        Matrix result = matrixService.calculateInverse(matrix);
+        return ResponseEntity.ok(result);
+    }
+
 }
